@@ -31,7 +31,7 @@ playwright install
 
 ## Usage
 
-Run `proxy.py`, and your proxy will be available on port 32323.
+Run `proxy.py`, and make a request to `localhost:32323/?url=https://ifconfig.me`.
 
 You can also pass several arguments.
 
@@ -52,6 +52,7 @@ This proxy has no authentication, and I don't plan to add any (PRs welcome thoug
 
 ## TODO
 
+[ ] Docker image
 [ ] Custom Chromium binary locations
 [ ] More CLI arguments to control ChromeDriver behavior
 [ ] Error handling (404, 403, 429)

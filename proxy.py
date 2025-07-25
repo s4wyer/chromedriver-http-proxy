@@ -1,6 +1,7 @@
 import time
 from dataclasses import dataclass
 import argparse
+import atexit
 
 import undetected_chromedriver as uc
 from selenium.webdriver.support.ui import WebDriverWait
@@ -26,18 +27,7 @@ class Scraper:
     def __init__(self, config: ScraperConfig):
         self.config = config
         self.driver = None
-
-    def __enter__(self):
         self._setup_driver()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._cleanup()
-
-    def _cleanup(self):
-        driver = self.driver
-        driver.close()
-        driver.quit()
 
     def _setup_driver(self):
         chrome_options = ChromeOptions()
@@ -49,17 +39,23 @@ class Scraper:
             use_subprocess=False
         )
 
+    def cleanup(self):
+        if self.driver:
+            try:
+                self.driver.quit()
+            except Exception as e:
+                print(f"Error during cleanup: {e}")
+            finally:
+                self.driver = None
+
     def render_page(self, url):
-        wait_time = self.config.wait_time
-        driver = self.driver
+        self.driver.get(url)
 
-        driver.get(url)
-
-        WebDriverWait(self.driver, wait_time).until(
+        WebDriverWait(self.driver, timeout=self.config.wait_time).until(
             lambda driver: driver.execute_script("return document.readyState") == "complete"
         )
 
-        time.sleep(wait_time)
+        time.sleep(self.config.wait_time)
 
         return self.driver.page_source
 
@@ -111,15 +107,12 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    port = args.port
-    host = args.host
+    server_config = ServerConfig(host=args.host, port=args.port)
+    scraper_config = ScraperConfig(wait_time=args.wait, headless=args.headless, user_agent=args.user_agent)
 
-    wait = args.wait
-    headless = args.headless
-    user_agent = args.user_agent
+    scraper = Scraper(scraper_config)
 
-    server_config = ServerConfig(host=host, port=port)
-    scraper_config = ScraperConfig(wait_time=wait, headless=headless, user_agent=user_agent)
+    atexit.register(scraper.cleanup)
 
     # run the server
     app = Flask(__name__)
@@ -127,11 +120,11 @@ if __name__ == "__main__":
     @app.route("/")
     def proxy_route():
         url = request.args.get("url")
-        with Scraper(scraper_config) as scraper:
-            try:
-                html = scraper.render_page(url)
-                return html
-            except Exception as e:
-                print(f"Error: {e}")
+
+        try:
+            html = scraper.render_page(url)
+            return html
+        except Exception as e:
+            print(f"Error: {e}", 500)
 
     app.run(host=server_config.host, port=server_config.port)

@@ -40,14 +40,11 @@ class Scraper:
         driver.quit()
 
     def _setup_driver(self):
-        headless = self.config.headless
-        user_agent = self.config.user_agent
-
         chrome_options = ChromeOptions()
-        chrome_options.add_argument(f"--user-agent={user_agent}")
+        chrome_options.add_argument(f"--user-agent={self.config.user_agent}")
 
         self.driver = uc.Chrome(
-            headless=headless,
+            headless=self.config.headless,
             options=chrome_options,
             use_subprocess=False
         )

@@ -1,5 +1,6 @@
 import time
 import atexit
+import logging
 
 from config import get_configs, ScraperConfig
 
@@ -26,16 +27,20 @@ class Scraper:
             use_subprocess=False
         )
 
+        logger.info("Driver started.")
+
     def cleanup(self):
         if self.driver:
             try:
                 self.driver.quit()
+                logger.info("Driver closed.")
             except Exception as e:
-                print(f"Error during cleanup: {e}")
+                logger.error(f"Exception during cleanup: {e}")
             finally:
                 self.driver = None
 
     def render_page(self, url):
+        logger.info(f"Fetching {url}...")
         self.driver.get(url)
 
         WebDriverWait(self.driver, timeout=self.config.wait_time).until(
@@ -44,10 +49,14 @@ class Scraper:
 
         time.sleep(self.config.wait_time)
 
+        logger.info(f"Fetched {url}.")
+
         return self.driver.page_source
 
 
 if __name__ == "__main__":
+    # logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
     server_config, scraper_config = get_configs()
 
     scraper = Scraper(scraper_config)
@@ -64,7 +73,8 @@ if __name__ == "__main__":
         try:
             html = scraper.render_page(url)
             return html
+            logger.info(f"Successfully sent {url} to client.")
         except Exception as e:
-            print(f"Error: {e}", 500)
+            logger.error(f"Error sending {url} to client: {e}", 500)
 
     app.run(host=server_config.host, port=server_config.port)

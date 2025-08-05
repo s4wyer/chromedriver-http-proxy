@@ -1,3 +1,4 @@
+import os
 import argparse
 from dataclasses import dataclass
 
@@ -24,7 +25,7 @@ def get_configs():
         help="Port the proxy runs on.",
         required=False,
         type=int,
-        default=32323
+        default=os.getenv("PROXY_PORT", 32323)
     )
 
     parser.add_argument(
@@ -32,7 +33,7 @@ def get_configs():
         help="Host the proxy to runs on.",
         required=False,
         type=str,
-        default="0.0.0.0"
+        default=os.getenv("PROXY_HOST", "0.0.0.0")
     )
 
     parser.add_argument(
@@ -40,7 +41,7 @@ def get_configs():
         help="Seconds to wait before returning content.",
         required=False,
         type=float,
-        default=10
+        default=os.getenv("SCRAPER_WAIT_TIME", 10)
     )
 
     parser.add_argument(
@@ -48,7 +49,7 @@ def get_configs():
         help="Whether or not to run Chrome headless.",
         required=False,
         type=bool,
-        default=True
+        default=os.getenv("SCRAPER_HEADLESS", True)
     )
 
     parser.add_argument(
@@ -56,7 +57,7 @@ def get_configs():
         help="Chrome user agent. Changing with the current ChromeDriver version recommended.",
         required=False,
         type=str,
-        default="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+        default=os.getenv("SCRAPER_USER_AGENT", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36")
     )
 
     args = parser.parse_args()

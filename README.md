@@ -52,7 +52,7 @@ This proxy has no authentication, and I don't plan to add any (PRs welcome thoug
 
 ## TODO
 
-- [ ] Docker image
+- [ ] ARM Docker images
 - [ ] Send JS/CSS to the client
 - [ ] Custom Chromium binary locations
 - [ ] More CLI arguments to control ChromeDriver behavior
@@ -60,6 +60,7 @@ This proxy has no authentication, and I don't plan to add any (PRs welcome thoug
 - [ ] Screenshot endpoint
 - [ ] Allow custom headers
 - [ ] POST requests
+- [x] Docker image
 
 ## Similiar Projects
 

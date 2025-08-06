@@ -1,0 +1,20 @@
+services:
+  chromedriver-http-proxy:
+    image: ghcr.io/s4wyer/chromedriver-http-proxy:latest
+    container_name: chromedriver-http-proxy
+
+    ports:
+      - "32323:32323"
+
+    environment:
+      - PROXY_PORT=32323
+      - PROXY_HOST=0.0.0.0
+      - SCRAPER_WAIT_TIME=10
+      - SCRAPER_HEADLESS=True
+      - SCRAPER_USER_AGENT="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+
+    # Increase shared memory size to prevent Chromium from crashing.
+    # Recommended by Selenium https://hub.docker.com/r/selenium/standalone-chrome
+    shm_size: '2gb'
+
+    restart: unless-stopped

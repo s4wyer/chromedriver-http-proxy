@@ -11,6 +11,16 @@ Simple HTTP proxy that renders pages with undetected-chromedriver and returns th
 
 ## Installation
 
+### Container
+
+```sh
+docker run --rm -p "32323:32323" ghcr.io/s4wyer/chromedriver-http-proxy # or s44wyer/chromedriver-http-proxy
+```
+
+There's also a [Docker compose example](/docker-compose.yml) with better config.
+
+### System
+
 uv: 
 
 ```sh

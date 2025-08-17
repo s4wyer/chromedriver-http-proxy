@@ -6,7 +6,7 @@ Simple HTTP proxy that renders pages with undetected-chromedriver and returns th
 
 - Solves [Anubis](https://anubis.techaro.lol/)
 - Solves [go-away](https://git.gammaspectra.live/git/go-away)
-- Solves similiar POW challenges
+- Solves similiar [POW challenges](https://git.gammaspectra.live/git/go-away#other-similar-projects)
 - Sometimes bypasses Cloudflare Turnstile
 
 ## Installation
